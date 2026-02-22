@@ -47,3 +47,6 @@ git push
 install the CLI: npm install -g insomnia-inso. 
 Inspect CLI help with inso --help. 
 A common pattern is inso run (see inso run --help) pointing to your workspace file, e.g.: inso run --workspace insomnia/insomnia_workspace.json
+
+# API Documentation
+https://github.com/vdespa/quick-introduction-to-postman/blob/main/simple-tool-rental-api.md 
