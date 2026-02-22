@@ -1,0 +1,611 @@
+{
+	"info": {
+		"_postman_id": "54b184da-cc2b-487b-9d3a-055f06932db7",
+		"name": "Tool rental API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11307028",
+		"_collection_link": "https://schuggybeginner.postman.co/workspace/SchuggyLearning~bec8b777-f86f-4fb6-a07c-2f03f2c7c7a7/collection/11307028-54b184da-cc2b-487b-9d3a-055f06932db7?action=share&source=collection_link&creator=11307028"
+	},
+	"item": [
+		{
+			"name": "Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Status is UP\", () => {\r",
+							"    const response = pm.response.json();\r",
+							"    //console.log(response.status);Doesnt always return the property\r",
+							"    console.log(response[\"status\"]);\r",
+							"    pm.expect(response.status).to.eql(\"UP\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base URL}}/status",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Tools with Query Params",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"const tools = response.filter((tool) => tool.inStock === true);\r",
+							"\r",
+							"const tool = tools[1];\r",
+							"\r",
+							"if (tool){\r",
+							"    pm.globals.set(\"toolId\",tool.id);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Tool Found\", () => {\r",
+							"    pm.expect(tool).to.exist; // Ensure tool exists\r",
+							"    pm.expect(tool.inStock).to.eql(true);\r",
+							"    pm.expect(tool.category).to.eql(pm.collectionVariables.get(\"category\")); // Ensure category matches\r",
+							"    pm.expect(tool.inStock).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base URL}}/tools?category={{category}}",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"tools"
+					],
+					"query": [
+						{
+							"key": "category",
+							"value": "trailers",
+							"disabled": true
+						},
+						{
+							"key": "category",
+							"value": "lawn-care",
+							"disabled": true
+						},
+						{
+							"key": "category",
+							"value": "{{category}}"
+						},
+						{
+							"key": "available",
+							"value": "true",
+							"description": "Looks at items inStock using a boolean",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "1719",
+							"disabled": true
+						},
+						{
+							"key": "results",
+							"value": "10",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Single Tool",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check tool\", () => {\r",
+							"const response = pm.response.json();\r",
+							"pm.expect(response.id).to.eql(pm.globals.get('toolId'));\r",
+							"//pm.expect(1).to.be.above(2);\r",
+							"pm.expect(response[\"current-stock\"]).to.be.above(5); //test that your current stock is above 5\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base URL}}/tools/:toolId",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"tools",
+						":toolId"
+					],
+					"query": [
+						{
+							"key": "category",
+							"value": "ladders",
+							"disabled": true
+						}
+					],
+					"variable": [
+						{
+							"key": "toolId",
+							"value": "{{toolId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Tools | Path Variables & Query Parameters",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"postman.setNextRequest(\"Create Orders with random data\"); //This syntax has been deprecated, whcih allows you to skip past the next test \r",
+							"pm.execution.setNextRequest(\"Create Orders with random data\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base URL}}/tools/:toolId?user-manual=true",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"tools",
+						":toolId"
+					],
+					"query": [
+						{
+							"key": "category",
+							"value": "ladders",
+							"disabled": true
+						},
+						{
+							"key": "user-manual",
+							"value": "true"
+						}
+					],
+					"variable": [
+						{
+							"key": "toolId",
+							"value": "4875"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 409\", () => {\r",
+							"    pm.response.to.have.status(409);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"clientName\": \"Postman\",\r\n   \"clientEmail\": \"liezel@example.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base URL}}/api-clients",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"api-clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Orders with random data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"const response = pm.response.json(); //pasrsing the response body and storing the result in a javascript variable\r",
+							"//console.log (response);\r",
+							"console.log(response[\"orderId\"]); //displays only the orderId in the console\r",
+							"//console.log(pm.collectionVariables.get(\"API Access Token\"));\r",
+							"// //(pm.collectionVariables.set(\"firstName\",\"Liezel\"));\r",
+							"pm.globals.set(\"orderId\",response.orderId) //dynamically sets the orderID as a global variable"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{API Access Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"toolId\":{{toolId}},\r\n    //\"customerName\": \"liezel Matekane\"\r\n    \"customerName\": \"{{$randomFullName}}\" //this allows you to use random data in the value\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base URL}}/orders",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{API Access Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base URL}}/orders",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Single Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{API Access Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Base URL}}/orders/:orderId",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"orders",
+						":orderId"
+					],
+					"variable": [
+						{
+							"key": "orderId",
+							"value": "{{orderId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{API Access Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\":\"{{orderId}}\",\r\n    \"comment\":\"Pick the order up at 12:15pm / 06 September 2025\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base URL}}/orders/:orderId",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"orders",
+						":orderId"
+					],
+					"variable": [
+						{
+							"key": "orderId",
+							"value": "{{orderId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{API Access Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\":\"RC1-nKA3TU66JELZYbvin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Base URL}}/orders/:orderId",
+					"host": [
+						"{{Base URL}}"
+					],
+					"path": [
+						"orders",
+						":orderId"
+					],
+					"variable": [
+						{
+							"key": "orderId",
+							"value": "{{orderId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Base URL",
+			"value": "https://simple-tool-rental-api.click"
+		},
+		{
+			"key": "password",
+			"value": "hdTest5427$%^"
+		},
+		{
+			"key": "API Access Token",
+			"value": "25ec661b117706291ff72bcd9b88cca7d3923e26a301bb7a4f07d3250e74454d"
+		},
+		{
+			"key": "firstName",
+			"value": "Liezel"
+		},
+		{
+			"key": "category",
+			"value": "electric-generators"
+		},
+		{
+			"key": "toolId",
+			"value": "4875"
+		}
+	]
+}
