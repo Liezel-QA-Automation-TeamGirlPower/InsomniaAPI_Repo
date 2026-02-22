@@ -1,0 +1,486 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Tool rental API
+meta:
+  id: wrk_33723f0ba32e4d6388a99969a875c1f4
+  created: 1771782155064
+  modified: 1771782155064
+  description: ""
+collection:
+  - name: Tool rental API
+    meta:
+      id: fld_304a0ffb94df432fb2f89ec32d036186
+      created: 1771782155072
+      modified: 1771782155072
+      sortKey: -1771782149538
+      description: ""
+    children:
+      - url: "{{Base URL}}/status"
+        name: Status
+        meta:
+          id: req_bae73e8c031843dc9672331b402d1f96
+          created: 1771782155075
+          modified: 1771782155075
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149537
+        method: GET
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 200\", () => {\r
+
+            \    insomnia.response.to.have.status(200);\r
+
+            });\r
+
+            insomnia.test(\"Status is UP\", () => {\r
+
+            \    const response = insomnia.response.json();\r
+
+            \    //console.log(response.status);Doesnt always return the
+            property\r
+
+            \    console.log(response[\"status\"]);\r
+
+            \    insomnia.expect(response.status).to.eql(\"UP\");\r
+
+            });"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{Base URL}}/tools"
+        name: Get all Tools with Query Params
+        meta:
+          id: req_19ccabb2b4954a98a1e540b1fcf9a6de
+          created: 1771782155080
+          modified: 1771782155080
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149536
+        method: GET
+        parameters:
+          - name: category
+            value: trailers
+            disabled: true
+          - name: category
+            value: lawn-care
+            disabled: true
+          - name: category
+            value: "{{category}}"
+            disabled: false
+          - name: available
+            value: "true"
+            disabled: true
+          - name: id
+            value: "1719"
+            disabled: true
+          - name: results
+            value: "10"
+            disabled: true
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 200\", () => {\r
+
+            \    insomnia.response.to.have.status(200);\r
+
+            });\r
+
+            \r
+
+            const response = insomnia.response.json();\r
+
+            const tools = response.filter((tool) => tool.inStock === true);\r
+
+            \r
+
+            const tool = tools[1];\r
+
+            \r
+
+            if (tool){\r
+
+            \    insomnia.globals.set(\"toolId\",tool.id);\r
+
+            }\r
+
+            \r
+
+            insomnia.test(\"Tool Found\", () => {\r
+
+            \    insomnia.expect(tool).to.exist; // Ensure tool exists\r
+
+            \    insomnia.expect(tool.inStock).to.eql(true);\r
+
+            \    insomnia.expect(tool.category).to.eql(insomnia.collectionVaria\
+            bles.get(\"category\")); // Ensure category matches\r
+
+            \    insomnia.expect(tool.inStock).to.be.true;\r
+
+            });\r\n"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{Base URL}}/tools/:toolId"
+        name: Get a Single Tool
+        meta:
+          id: req_c934233061e641489c3d30cc2a23ada1
+          created: 1771782155082
+          modified: 1771782155082
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149535
+        method: GET
+        parameters:
+          - name: category
+            value: ladders
+            disabled: true
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 200\", () => {\r
+
+            \    insomnia.response.to.have.status(200);\r
+
+            });\r
+
+            \r
+
+            insomnia.test(\"Check tool\", () => {\r
+
+            const response = insomnia.response.json();\r
+
+            insomnia.expect(response.id).to.eql(insomnia.globals.get('toolId'));\
+            \r
+
+            //insomnia.expect(1).to.be.above(2);\r
+
+            insomnia.expect(response[\"current-stock\"]).to.be.above(5); //test
+            that your current stock is above 5\r
+
+            });\r\n"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: toolId
+            value: "{{toolId}}"
+      - url: "{{Base URL}}/tools/:toolId"
+        name: Get Single Tools | Path Variables & Query Parameters
+        meta:
+          id: req_0c1234e85d754754b85adb6342a26744
+          created: 1771782155084
+          modified: 1771782155084
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149534
+        method: GET
+        parameters:
+          - name: category
+            value: ladders
+            disabled: true
+          - name: user-manual
+            value: "true"
+            disabled: false
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 200\", () => {\r
+
+            \    insomnia.response.to.have.status(200);\r
+
+            });\r
+
+            insomnia.execution.setNextRequest(\"Create Orders with random
+            data\"); //This syntax has been deprecated, whcih allows you to skip
+            past the next test \r
+
+            insomnia.execution.setNextRequest(\"Create Orders with random
+            data\");"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: toolId
+            value: "4875"
+      - url: "{{_['Base']}}/api-clients"
+        name: Register API
+        meta:
+          id: req_acdc8f7c87be47208f2e0af8c3bb597c
+          created: 1771782155086
+          modified: 1771782155086
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149533
+        method: POST
+        body:
+          mimeType: application/json
+          text: "{\r
+
+            \   \"clientName\": \"Postman\",\r
+
+            \   \"clientEmail\": \"liezel@example.com\"\r
+
+            }"
+        headers:
+          - name: Content-Type
+            value: application/json
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 409\", () => {\r
+
+            \    insomnia.response.to.have.status(409);\r
+
+            });\r\n"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{Base URL}}/orders"
+        name: Create Orders with random data
+        meta:
+          id: req_730c2a3c48304bf68606d2f1e7ef8696
+          created: 1771782155088
+          modified: 1771782155088
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149532
+        method: POST
+        body:
+          mimeType: application/json
+          text: "{\r
+
+            \    \"toolId\":{{toolId}},\r
+
+            \    //\"customerName\": \"liezel Matekane\"\r
+
+            \    \"customerName\": \"{% faker 'randomFullName' %}\" //this
+            allows you to use random data in the value\r
+
+            \    \r
+
+            }"
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          disabled: false
+          token: "{{API Access Token}}"
+          prefix: ""
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 201\", () => {\r
+
+            \    insomnia.response.to.have.status(201);\r
+
+            });\r
+
+            const response = insomnia.response.json(); //pasrsing the response
+            body and storing the result in a javascript variable\r
+
+            //console.log (response);\r
+
+            console.log(response[\"orderId\"]); //displays only the orderId in
+            the console\r
+
+            //console.log(insomnia.collectionVariables.get(\"API Access
+            Token\"));\r
+
+            // //(insomnia.collectionVariables.set(\"firstName\",\"Liezel\"));\r
+
+            insomnia.globals.set(\"orderId\",response.orderId) //dynamically
+            sets the orderID as a global variable"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{Base URL}}/orders"
+        name: Get all Orders
+        meta:
+          id: req_3e76a3cfb8c64353959e0a1e89f14cfb
+          created: 1771782155091
+          modified: 1771782155091
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149531
+        method: GET
+        authentication:
+          type: bearer
+          disabled: false
+          token: "{{API Access Token}}"
+          prefix: ""
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 200\", () => {\r
+
+            \    insomnia.response.to.have.status(200);\r
+
+            });\r
+
+            \r\n"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{Base URL}}/orders/:orderId"
+        name: Get a Single Order
+        meta:
+          id: req_b4a801d7db4547838648caf97cbb5bdf
+          created: 1771782155093
+          modified: 1771782155093
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149530
+        method: GET
+        authentication:
+          type: bearer
+          disabled: false
+          token: "{{API Access Token}}"
+          prefix: ""
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 200\", () => {\r
+
+            \    insomnia.response.to.have.status(200);\r
+
+            });"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: orderId
+            value: "{{orderId}}"
+      - url: "{{Base URL}}/orders/:orderId"
+        name: Update Order
+        meta:
+          id: req_27be538b3c98472fae5ec287332c4f5f
+          created: 1771782155097
+          modified: 1771782155097
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149529
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: "{\r
+
+            \    \"orderId\":\"{{orderId}}\",\r
+
+            \    \"comment\":\"Pick the order up at 12:15pm / 06 September
+            2025\"\r
+
+            }"
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          disabled: false
+          token: "{{API Access Token}}"
+          prefix: ""
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 204\", () => {\r
+
+            \    insomnia.response.to.have.status(204);\r
+
+            });"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: orderId
+            value: "{{orderId}}"
+      - url: "{{Base URL}}/orders/:orderId"
+        name: Delete Order
+        meta:
+          id: req_e97743a3fd824bcd925610d6e3414f8e
+          created: 1771782155100
+          modified: 1771782155100
+          isPrivate: false
+          description: ""
+          sortKey: -1771782149528
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: "{\r
+
+            \    \"orderId\":\"RC1-nKA3TU66JELZYbvin\"\r
+
+            }"
+        headers:
+          - name: Content-Type
+            value: application/json
+        authentication:
+          type: bearer
+          disabled: false
+          token: "{{API Access Token}}"
+          prefix: ""
+        scripts:
+          afterResponse: "insomnia.test(\"Status code is 204\", () => {\r
+
+            \    insomnia.response.to.have.status(204);\r
+
+            });"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: orderId
+            value: "{{orderId}}"
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_6cf90eec516dedded4cf5d1757982bb78ad1e9c6
+    created: 1771782155328
+    modified: 1771782155328
+environments:
+  name: Variables
+  meta:
+    id: env_705cf048f1e241728190a86a0589bae9
+    created: 1771782155102
+    modified: 1771782155102
+    isPrivate: false
+  data:
+    Base URL: https://simple-tool-rental-api.click
+    password: hdTest5427$%^
+    API Access Token: 25ec661b117706291ff72bcd9b88cca7d3923e26a301bb7a4f07d3250e74454d
+    firstName: Liezel
+    category: electric-generators
+    toolId: "4875"
